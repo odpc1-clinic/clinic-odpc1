@@ -1,0 +1,165 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Print Selected Rows</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .text-red {
+        color: red !important;
+        font-weight: bold;
+    }
+        @media print {
+            @page {
+                size: A4; /* กำหนดขนาดหน้ากระดาษเป็น A4 */
+                margin: 10mm; /* กำหนดระยะขอบ */
+            }
+        body {
+            font-family: 'Sarabun', Arial, sans-serif;
+            line-height: 1.6;
+        }
+
+        .header-table {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .header-table td {
+            border: none !important;
+        }
+
+        .header-table img {
+            max-height: 120px;
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .header-subtitle {
+            font-size: 15px;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 10px;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid #000;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        thead {
+            background-color: #f1f1f1;
+        }
+        .text-red {
+        color: red;
+        font-weight: bold;
+    }
+    </style>
+</head>
+<body class="container">
+    <table class="header-table">
+        <tr>
+            <td class="text-center" style="width: 12%;">
+                <img src="{{ asset('images/logo.jpg') }}" alt="Logo">
+            </td>
+            <td class="text-center" style="width: 76%;">
+                <div class="header-title"><h3>Laboratory Test Report</h3></div>
+                <div class="header-subtitle">Medical Laboratory for Disease Control, Office of Disease Prevention and Control 1 Chiang Mai</div>
+                <div class="header-subtitle">
+                    143 Sri Don Chai Road, Chang Klan Subdistrict, Mueang District, Chiang Mai 50000<br>
+                    Telephone: 053-140 774 to 6
+                </div>
+            </td>
+            <td class="text-center" style="width: 12%;">
+                <img src="{{ asset('images/S__21831716.jpg') }}" alt="Logo Right">
+            </td>
+        </tr>
+    </table>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div><strong>Patient Number(HN):</strong> {{ $patient->code ?? '' }}</div>
+            <div><strong>Patient Name:</strong> {{ $patient->name ?? '' }} {{ $patient->surname ?? '' }}</div>
+        </div>
+        <div class="col-md-6">
+            <div><strong>Sex:</strong> 
+    {{ $patient->sex == '1' ? 'M' : ($patient->sex == '2' ? 'F' : '') }}
+</div>
+
+            <div><strong>Age:</strong> {{ $patient->age() ?? '' }}</div>
+        </div>
+    </div>
+
+    <h3>Result</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Method</th>
+                <th>Specimen From</th>
+                <th>Result</th>
+            </tr>
+        </thead>
+        <tbody>
+            ${selectedRows}
+        </tbody>
+    </table>
+        <br><br>
+<style>
+  table, th, td {
+    border: none !important; /* ลบขอบของตารางทั้งหมด */
+  }
+
+  input {
+    border: none !important; /* ลบขอบของ input */
+    background-color: white; /* กำหนดพื้นหลังเป็นสีขาว */
+  }
+</style>
+
+<table class="table table-sm table-borderless">
+  <tbody>
+       
+    <tr>
+      <th scope="row" class="align-middle"></th>
+      <td class="text-center" style="font-size: 14px;">Reported By</td>
+      <td class="text-center">
+        <td style="font-size: 14px;">{{ App\Models\User::getName($lab->report_by) }}</td>
+      </td>
+      <td></td>
+      <td class="text-center" style="font-size: 14px;">Reported Date</td>
+      <td class="text-center">
+        <td style="font-size: 14px;">{{ $lab->report_date }} {{ $lab->report_at }}</td>
+      </td>
+      <td></td>
+    </tr>
+    <tr>
+      <th scope="row" class="align-middle"></th>
+      <td class="text-center" style="font-size: 14px;">Approved By</td>
+      <td class="text-center">
+        <td style="font-size: 14px;">{{ App\Models\User::getName($lab->approve_by) }}</td>
+      </td>
+      <td></td>
+      <td class="text-center" style="font-size: 14px;">Approved Date</td>
+      <td class="text-center">
+        <td style="font-size: 14px;">{{ $lab->approve_date }} {{ $lab->approve_at }}</td>
+      </td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+
+ 
+</body>
+</html>

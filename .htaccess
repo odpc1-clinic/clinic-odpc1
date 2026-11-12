@@ -1,0 +1,17 @@
+RewriteEngine On
+
+# ===== กันระบบหลุดออกอินเทอร์เน็ตผ่าน Cloudflare tunnel =====
+# ท่อ cloudflared เปิดไว้เพื่อให้ LINE ยิง webhook กลับเข้ามาเท่านั้น
+# แต่ quick tunnel ส่งต่อ "ทุก path" ทำให้หน้า login ของระบบคลินิกเข้าถึงได้จากทั่วโลก
+# (ทดสอบ 2569-07-21 แล้วว่า /login ตอบ 200 จากอินเทอร์เน็ตจริง)
+# ทราฟฟิกจากท่อแยกได้จาก Host ที่ลงท้าย .trycloudflare.com หรือ header CF-Ray ที่ Cloudflare ใส่มา
+# (คำขอในวงแลนไม่มีทั้งสองอย่าง — ตรวจยืนยันแล้ว) จึงอนุญาตเฉพาะ /line/webhook นอกนั้นตอบ 403
+RewriteCond %{HTTP_HOST} \.trycloudflare\.com$ [NC,OR]
+RewriteCond %{HTTP:CF-Ray} .
+# ต้องยอมรับทั้ง /line/webhook และ /public/line/webhook เพราะกฎด้านล่างรีไรต์ไป /public
+# แล้ว Apache วนอ่าน .htaccess ซ้ำอีกรอบด้วย REQUEST_URI ตัวใหม่
+RewriteCond %{REQUEST_URI} !^(/public)?/line/webhook/?$
+RewriteRule ^ - [F,L]
+
+RewriteCond %{REQUEST_URI} !^/public/
+RewriteRule ^(.*)$ /public/$1 [L,QSA]

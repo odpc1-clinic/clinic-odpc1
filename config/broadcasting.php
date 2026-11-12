@@ -1,0 +1,76 @@
+<?php
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Default Broadcaster
+    |--------------------------------------------------------------------------
+    |
+    | This option controls the default broadcaster that will be used by the
+    | framework when an event needs to be broadcast. You may set this to
+    | any of the connections defined in the "connections" array below.
+    |
+    | Supported: "pusher", "redis", "log", "null"
+    |
+    */
+
+    'default' => env('BROADCAST_CONNECTION', env('BROADCAST_DRIVER', 'null')),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Broadcast Connections
+    |--------------------------------------------------------------------------
+    |
+    | Here you may define all of the broadcast connections that will be used
+    | to broadcast events to other systems or over websockets. Samples of
+    | each available type of connection are provided inside this array.
+    |
+    */
+
+    'connections' => [
+
+        // Reverb = เซิร์ฟเวอร์ WebSocket ในเครื่อง (php artisan reverb:start) — 2569-10-20
+        // PHP ส่งสัญญาณตรงไปที่ 127.0.0.1 · เบราว์เซอร์ต่อผ่าน Apache (wss://<เว็บนี้>/app/...) ไม่ต้องเปิดพอร์ตเพิ่ม
+        // timeout สั้น: Reverb ดับต้องไม่ทำให้การบันทึกคนไข้ค้าง (ส่งหลังตอบหน้าเว็บอยู่แล้ว แต่กันไว้อีกชั้น)
+        'reverb' => [
+            'driver' => 'reverb',
+            'key' => env('REVERB_APP_KEY'),
+            'secret' => env('REVERB_APP_SECRET'),
+            'app_id' => env('REVERB_APP_ID'),
+            'options' => [
+                'host' => env('REVERB_HOST', '127.0.0.1'),
+                'port' => env('REVERB_PORT', 8080),
+                'scheme' => env('REVERB_SCHEME', 'http'),
+                'useTLS' => env('REVERB_SCHEME', 'http') === 'https',
+            ],
+            'client_options' => ['timeout' => 2, 'connect_timeout' => 0.5],
+        ],
+
+        'pusher' => [
+            'driver' => 'pusher',
+            'key' => env('PUSHER_APP_KEY'),
+            'secret' => env('PUSHER_APP_SECRET'),
+            'app_id' => env('PUSHER_APP_ID'),
+            'options' => [
+                'cluster' => env('PUSHER_APP_CLUSTER'),
+                'useTLS' => true,
+            ],
+        ],
+
+        'redis' => [
+            'driver' => 'redis',
+            'connection' => 'default',
+        ],
+
+        'log' => [
+            'driver' => 'log',
+        ],
+
+        'null' => [
+            'driver' => 'null',
+        ],
+
+    ],
+
+];

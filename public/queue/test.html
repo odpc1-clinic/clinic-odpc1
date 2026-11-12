@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TTS with Microsoft Premwadee</title>
+</head>
+<body>
+  <h1>Text-to-Speech Demo</h1>
+
+  <textarea id="text" rows="5" cols="50">สวัสดีค่ะ ยินดีที่ได้รู้จัก</textarea><br><br>
+
+  <button onclick="speak()">Speak</button>
+  <button onclick="playNotification()">Play Notification</button>
+
+  <audio id="notificationSound" src="notification-sound.mp3"></audio>
+
+  <script>
+    function speak() {
+      const text = document.getElementById('text').value;
+      const utterance = new SpeechSynthesisUtterance(text);
+
+      // ลดความเร็ว (ค่าเริ่มต้นคือ 1.0)
+      utterance.rate = 0.75;
+
+      // ใช้ Microsoft Premwadee ถ้ามี
+      const voices = window.speechSynthesis.getVoices();
+      const thaiVoice = voices.find(voice => voice.name.includes('Premwadee'));
+
+      if (thaiVoice) {
+        utterance.voice = thaiVoice;
+        utterance.lang = 'th-TH';
+      } else {
+        alert('Microsoft Premwadee voice not found!');
+      }
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function playNotification() {
+      const sound = document.getElementById('notificationSound');
+      sound.play();
+    }
+
+    window.speechSynthesis.onvoiceschanged = () => {
+      console.log(window.speechSynthesis.getVoices());
+    };
+  </script>
+</body>
+</html>

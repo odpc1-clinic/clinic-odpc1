@@ -1,0 +1,27 @@
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+
+    # Block direct web access to library internals (pentest prep, 2026-10-20):
+    # public/vendor and public/queue/vendor are composer folders for the queue app - their PHP files
+    # and version manifests (installed.json) must not be callable/readable over HTTP. Static assets stay allowed.
+    RewriteRule (^|/)vendor/.*\.(php|phar|json|lock|md|txt|xml|dist|sh|bat|yml|yaml)$ - [F,L]
+    RewriteRule (^|/)(composer\.(json|lock)|package(-lock)?\.json|mix-manifest\.json|web\.config|phpunit\.xml)$ - [F,L]
+
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Redirect Trailing Slashes If Not A Folder...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
+
+    # Send Requests To Front Controller...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+</IfModule>

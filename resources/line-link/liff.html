@@ -1,0 +1,190 @@
+<!doctype html>
+<!--
+  ฟอร์มกรอกรหัสผูก LINE (LIFF) — 2569-10-22
+  ไฟล์นี้เป็นต้นแบบ อย่าอัปโหลดตรง ๆ — รัน php artisan line:link-setup แล้วเอาไฟล์ที่ได้ไปวาง
+  (คำสั่งเติม LIFF ID, ที่อยู่ที่พัก, กุญแจสาธารณะ ให้)
+  ทำไมต้องมีฟอร์ม: server ใหม่อยู่วงใน การพิมพ์รหัสในแชทต้องพึ่ง webhook ขาเข้าซึ่งไม่มี
+  ผูกได้เฉพาะรหัส 6 หลักจากเจ้าหน้าที่ · หน้านี้ไม่เก็บอะไร รหัสถูกเข้ารหัสในมือถือก่อนส่ง
+-->
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ผูกบัญชี LINE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --ground: #f3f6f5;
+    --card: #ffffff;
+    --ink: #1d2b28;
+    --muted: #5f6f6b;
+    --line: #d5dfdc;
+    --accent: #0b7a5c;
+    --accent-ink: #ffffff;
+    --soft: #e3f1ec;
+    --danger: #b3261e;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--ground); color: var(--ink);
+    font: 16px/1.6 "IBM Plex Sans Thai", "Sarabun", "Noto Sans Thai", system-ui, sans-serif;
+    padding: 20px 16px 40px;
+  }
+  main { max-width: 440px; margin: 0 auto; display: grid; gap: 16px; }
+  header h1 { font-size: 1.35rem; font-weight: 600; margin: 0; text-wrap: balance; }
+  header p { margin: 4px 0 0; color: var(--muted); font-size: .92rem; }
+  .en { color: var(--muted); font-size: .82rem; display: block; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px 16px; display: grid; gap: 14px; }
+  label { display: grid; gap: 6px; font-weight: 500; }
+  input {
+    font: inherit; color: var(--ink); background: var(--card);
+    border: 1px solid var(--line); border-radius: 10px; padding: 11px 12px; width: 100%;
+  }
+  input:focus, button:focus-visible { outline: 3px solid rgba(11,122,92,.35); outline-offset: 1px; border-color: var(--accent); }
+  .code { font-size: 1.8rem; letter-spacing: .35em; text-align: center; font-variant-numeric: tabular-nums; }
+  .hint { color: var(--muted); font-size: .85rem; margin: 0; }
+  .primary { border: 0; border-radius: 12px; padding: 14px; font: inherit; font-weight: 600; background: var(--accent); color: var(--accent-ink); width: 100%; }
+  .primary:disabled { opacity: .55; }
+  .err { color: var(--danger); font-size: .9rem; margin: 0; min-height: 1.2em; }
+  /* ปุ่มเพิ่มเพื่อนต้องเด่นที่สุดในหน้า — ไม่เป็นเพื่อน = ผูกสำเร็จแต่ข้อความส่งไม่ถึง */
+  .friend { background: #fff7e0; border: 2px solid #f0c64a; border-radius: 14px; padding: 16px; display: grid; gap: 10px; }
+  .friend-step { margin: 0; font-size: .8rem; font-weight: 600; letter-spacing: .06em; color: #8a6400; }
+  .friend-text { margin: 0; font-weight: 500; }
+  .add-btn {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    background: #06c755; color: #fff; text-decoration: none;
+    font-size: 1.15rem; font-weight: 600; padding: 15px; border-radius: 12px;
+    box-shadow: 0 3px 0 #04a446;
+  }
+  .add-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #04a446; }
+  @media (prefers-reduced-motion: no-preference) {
+    .add-btn { animation: nudge 2.4s ease-in-out 1s 3; }
+    @keyframes nudge { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+  }
+  .done { text-align: center; }
+  .done .mark { width: 56px; height: 56px; border-radius: 50%; background: var(--soft); color: var(--accent); display: grid; place-items: center; font-size: 1.8rem; margin: 0 auto; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>ผูกบัญชี LINE กับข้อมูลการรับบริการ</h1>
+    <p>ศูนย์บริการเวชศาสตร์ป้องกัน สคร.1 เชียงใหม่ — เพื่อรับแจ้งเตือนนัดหมาย
+      <span class="en">Link your LINE to receive appointment reminders</span></p>
+  </header>
+
+  <div id="loading" class="card"><p class="hint">กำลังเปิด… / Loading…</p></div>
+
+  <div id="notFriend" class="friend" hidden>
+    <p class="friend-step">ขั้นที่ 1 · Step 1</p>
+    <p class="friend-text">เพิ่มเพื่อนบัญชีแจ้งเตือนก่อน ไม่งั้นจะไม่ได้รับข้อความนัดหมาย
+      <span class="en">Add our account first, or reminders can't reach you.</span></p>
+    <a id="addFriend" class="add-btn" href="#">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M15 12c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4zm0 2c-2.7 0-8 1.3-8 4v2h16v-2c0-2.7-5.3-4-8-4zM6 10V7H4v3H1v2h3v3h2v-3h3v-2H6z"/></svg>
+      เพิ่มเพื่อน · Add friend
+    </a>
+  </div>
+
+  <form id="form" class="card" hidden novalidate>
+    <label for="code">รหัส 6 หลักจากเจ้าหน้าที่ <span class="en">6-digit code from our staff</span></label>
+    <input id="code" class="code" inputmode="numeric" autocomplete="one-time-code" maxlength="7" placeholder="••••••">
+    <p class="hint">ขอรหัสได้ที่เจ้าหน้าที่ตอนมารับบริการ · รหัสใช้ได้ 10 นาที
+      <span class="en">Ask our staff for a code at your visit. Valid for 10 minutes.</span></p>
+    <p id="err" class="err" role="alert"></p>
+    <button id="submit" class="primary" type="submit">ผูกบัญชี / Link</button>
+  </form>
+
+  <div id="done" class="card done" hidden>
+    <div class="mark">✓</div>
+    <p style="margin:0">ส่งรหัสแล้ว ระบบจะยืนยันทาง LINE ภายในไม่กี่นาที
+      <span class="en">Sent. You will get a confirmation in LINE within a few minutes.</span></p>
+    <button class="primary" type="button" id="close">ปิด / Close</button>
+  </div>
+</main>
+
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<script>
+(function () {
+  var LIFF_ID = '__LIFF_ID__';
+  var RELAY   = '__RELAY_URL__';
+  var PUBKEY  = '__PUBLIC_KEY__';
+  var OA_URL  = '__OA_URL__';
+
+  var $ = function (id) { return document.getElementById(id); };
+  var profile = { displayName: '' };
+
+  function b64(buf) { return btoa(String.fromCharCode.apply(null, new Uint8Array(buf))); }
+  function unb64(s) { return Uint8Array.from(atob(s), function (c) { return c.charCodeAt(0); }); }
+
+  // AES-GCM ห่อเนื้อหา + RSA-OAEP(SHA-1) ห่อกุญแจ — ฝั่ง PHP ถอดด้วย openssl_private_decrypt
+  async function seal(obj) {
+    var pub = await crypto.subtle.importKey('spki', unb64(PUBKEY), { name: 'RSA-OAEP', hash: 'SHA-1' }, false, ['encrypt']);
+    var key = await crypto.subtle.generateKey({ name: 'AES-GCM', length: 256 }, true, ['encrypt']);
+    var iv = crypto.getRandomValues(new Uint8Array(12));
+    var data = await crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, key, new TextEncoder().encode(JSON.stringify(obj)));
+    var raw = await crypto.subtle.exportKey('raw', key);
+    var k = await crypto.subtle.encrypt({ name: 'RSA-OAEP' }, pub, raw);
+    return { k: b64(k), iv: b64(iv), d: b64(data) };
+  }
+
+  $('form').onsubmit = async function (e) {
+    e.preventDefault();
+    $('err').textContent = '';
+    var code = $('code').value.replace(/\D/g, '');
+    if (code.length !== 6) { $('err').textContent = 'กรุณากรอกรหัส 6 หลัก / Please enter the 6-digit code'; return; }
+
+    $('submit').disabled = true;
+    $('submit').textContent = 'กำลังส่ง… / Sending…';
+    try {
+      var box = await seal({ code: code, displayName: profile.displayName || '' });
+      var res = await fetch(RELAY, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ idToken: liff.getIDToken(), box: box })
+      });
+      var out = await res.json();
+      if (!out.ok) {
+        throw out.error === 'too_many'
+          ? 'ส่งหลายครั้งเกินไป กรุณารอ 1 ชั่วโมง / Too many attempts, try again in an hour'
+          : out.error === 'verify'
+            ? 'ยืนยันบัญชี LINE ไม่ผ่าน กรุณาปิดแล้วเปิดหน้านี้ใหม่ / Please close and reopen this page'
+            : 'ส่งไม่สำเร็จ กรุณาลองใหม่ / Could not send, please try again';
+      }
+      $('form').hidden = true;
+      $('done').hidden = false;
+    } catch (msg) {
+      $('err').textContent = typeof msg === 'string' ? msg : 'ส่งไม่สำเร็จ กรุณาลองใหม่ / Could not send, please try again';
+      $('submit').disabled = false;
+      $('submit').textContent = 'ผูกบัญชี / Link';
+    }
+  };
+
+  $('close').onclick = function () { if (liff.isInClient()) liff.closeWindow(); else window.close(); };
+  $('addFriend').href = OA_URL;
+
+  async function checkFriend() {
+    try {
+      var f = await liff.getFriendship();
+      $('notFriend').hidden = !!f.friendFlag;
+    } catch (e) {}
+  }
+
+  liff.init({ liffId: LIFF_ID }).then(async function () {
+    if (!liff.isLoggedIn()) { liff.login(); return; }
+    try { profile = await liff.getProfile(); } catch (e) {}
+    checkFriend();
+    // กดเพิ่มเพื่อนแล้วกลับมาหน้านี้ — ตรวจใหม่ให้กล่องเตือนหายเอง
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) checkFriend(); });
+    $('loading').hidden = true;
+    $('form').hidden = false;
+    $('code').focus();
+  }).catch(function () {
+    $('loading').innerHTML = '<p class="err">เปิดไม่สำเร็จ กรุณาเปิดจากในแอป LINE<span class="en">Please open this page inside the LINE app.</span></p>';
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,415 @@
+<!-- <div class="form-group {{ $errors->has('patient_id') ? 'has-error' : '' }}">
+    <label for="patient_id" class="control-label">{{ 'Patient Id' }}</label>
+    <input class="form-control" name="patient_id" type="number" id="patient_id"
+        value="{{ isset($visit->patient_id) ? $visit->patient_id : '' }}">
+    {!! $errors->first('patient_id', '<p class="help-block">:message</div>') !!}
+</div> -->
+<?php
+if (isset($visit)) {
+    $patient = $visit->patient();
+} else {
+    $patient = App\Models\Patient::find($_GET['patient']);
+}
+
+?>
+<div class="row">
+    <div class="col-2 form-group {{ $errors->has('code') ? 'has-error' : '' }}">
+        <label for="code" class="control-label">{{ 'หมายเลขประจำตัว(HN.)' }}</label>
+        <input class="form-control" name="code" type="text" id="code" value="{{ isset($patient->code) ? $patient->code : '' }}" readonly>
+    </div>
+
+    <div class="col-4 form-group {{ $errors->has('name') ? 'has-error' : '' }}">
+        <label for="name" class="control-label">{{ 'ชื่่อ' }}</label>
+        <input class="form-control" name="name" type="text" id="name" value="{{ isset($patient->name) ? $patient->name : '' }}" readonly>
+    </div>
+    <div class="col-4 form-group {{ $errors->has('surname') ? 'has-error' : '' }}">
+        <label for="surname" class="control-label">{{ 'นามสกุล' }}</label>
+        <input class="form-control" name="surname" type="text" id="surname" value="{{ isset($patient->surname) ? $patient->surname : '' }}" readonly>
+    </div>
+    <div class="col-2 form-group {{ $errors->has('birth_date') ? 'has-error' : '' }}">
+        <label for="age" class="control-label">{{ 'birth_date' }}</label>
+        <input class="form-control" name="birth_date" type="text" id="age" value="{{ isset($patient->birth_date) ? $patient->birth_date : '' }}" readonly>
+    </div>
+</div>
+<hr>
+<div class="row">
+    <div class="col-3 form-group {{ $errors->has('date') ? 'has-error' : '' }}">
+        <label for="date" class="control-label">{{ 'วันที่' }}</label>
+        <input class="form-control date" name="date" type="text" id="date" value="{{ isset($visit->date) ? $visit->date : date('d').'/'.date('m').'/'.(date('Y')+543) }}">
+        {!! $errors->first('date', '<p class="help-block">:message</div>') !!}
+    </div>
+
+    <div class="col-3 form-group {{ $errors->has('know_from') ? 'has-error' : '' }}">
+        <label for="know_from" class="control-label">{{ 'ช่องทางการเข้าถึง' }}</label>
+        {{-- <input class="form-control" name="know_from" type="number" id="know_from" value="{{ isset($visit->know_from) ? $visit->know_from : ''}}" > --}}
+        <select class="form-control" name="know_from" id="know_from">
+            @foreach (App\Models\Visit::$knowFromOption as $key => $value)
+            <option value="{{ $key }}" @if (isset($visit->know_from) && $key == $visit->know_from) selected="selected" @endif>
+                {{ $value }}
+            </option>
+            @endforeach
+        </select>
+
+        {!! $errors->first('know_from', '<p class="help-block">:message</div>') !!}
+    </div>
+    <div class="col-3 form-group {{ $errors->has('send_from') ? 'has-error' : '' }}">
+        <label for="send_from" class="control-label">{{ 'ส่งต่อมาจาก' }}</label>
+        <input class="form-control" name="send_from" type="text" id="send_from" value="{{ isset($visit->send_from) ? $visit->send_from : '' }}">
+        {!! $errors->first('send_from', '<p class="help-block">:message</div>') !!}
+    </div>
+    <div class="col-3 form-group {{ $errors->has('other_from') ? 'has-error' : '' }}">
+        <label for="other_from" class="control-label">{{ 'ช่องทางอื่น ๆ' }}</label>
+        <input class="form-control" name="other_from" type="text" id="other_from" value="{{ isset($visit->other_from) ? $visit->other_from : '' }}">
+        {!! $errors->first('other_from', '<p class="help-block">:message</div>') !!}
+    </div>
+</div>
+<br>
+
+<div class="d-grid">
+    <a class="btn btn-light " data-bs-toggle="collapse" href="#visitReason" role="button" aria-expanded="false" aria-controls="collapseExample">
+        เหตุผลหสักในการตรวจครั้งนี้
+    </a>
+</div>
+
+<div class="collapse  pb-2" id="visitReason">
+    <div class="card card-body">
+        <h6>STI</h6>
+        <div class="row">
+            <div class="col-4 form-group {{ $errors->has('reason_sti') ? 'has-error' : '' }}">
+                <label for="reason_sti" class="control-label">{{ 'เหตุผล Sti' }}</label>
+                {{-- <input class="form-control" name="reason_sti" type="number" id="reason_sti"
+            value="{{ isset($visit->reason_sti) ? $visit->reason_sti : '' }}"> --}}
+
+                <select class="form-control" name="reason_sti" id="reason_sti">
+                    @foreach (App\Models\Visit::$reasonStiOption as $key => $value)
+                    <option value="{{ $key }}" @if (isset($visit->reason_sti) && $key == $visit->reason_sti) selected="selected" @endif>
+                        {{ $value }}
+                    </option>
+                    @endforeach
+                </select>
+                {!! $errors->first('reason_sti', '<p class="help-block">:message</div>') !!}
+            </div>
+            <div class="col-8 form-group {{ $errors->has('reason_sti_other') ? 'has-error' : '' }}">
+                <label for="reason_sti_other" class="control-label">{{ 'เหตุผล Sti อื่น ๆ' }}</label>
+                <input class="form-control" name="reason_sti_other" type="text" id="reason_sti_other" value="{{ isset($visit->reason_sti_other) ? $visit->reason_sti_other : '' }}">
+                {!! $errors->first('reason_sti_other', '<p class="help-block">:message</div>') !!}
+            </div>
+
+
+        </div>
+
+        <h6>VCT</h6>
+        <div class="row">
+            <div class="col-6 form-group {{ $errors->has('reason_vct') ? 'has-error' : '' }}">
+                <label for="reason_vct" class="control-label">{{ 'เหตุผล Vct' }}</label>
+                <select class="form-control" name="reason_vct" id="reason_vct">
+                    @foreach (App\Models\Visit::$reasonVctOption as $key => $value)
+                    <option value="{{ $key }}" @if (isset($visit->reason_vct) && $key == $visit->reason_vct) selected="selected" @endif>
+                        {{ $value }}
+                    </option>
+                    @endforeach
+                </select>
+                {!! $errors->first('reason_vct', '<p class="help-block">:message</div>') !!}
+            </div>
+            <div class="col-6 form-group {{ $errors->has('reason_vct_other') ? 'has-error' : '' }}">
+                <label for="reason_vct_other" class="control-label">{{ 'เหตุผล Vct อื่น ๆ' }}</label>
+                <input class="form-control" name="reason_vct_other" type="text" id="reason_vct_other" value="{{ isset($visit->reason_vct_other) ? $visit->reason_vct_other : '' }}">
+                {!! $errors->first('reason_vct_other', '<p class="help-block">:message</div>') !!}
+            </div>
+        </div>
+
+
+
+        <div class="row">
+            <div class="col-6 form-group {{ $errors->has('risk_behavior') ? 'has-error' : '' }}">
+                <label for="risk_behavior" class="control-label">{{ 'พฤติกรรมเสี่ยง' }}</label>
+                {{-- <input class="form-control" name="risk_behavior" type="text" id="risk_behavior"
+            value="{{ isset($visit->risk_behavior) ? $visit->risk_behavior : '' }}"> --}}
+                <select class="form-control" name="risk_behavior" id="risk_behavior">
+                    @foreach (App\Models\Visit::$riskBehaviorOption as $key => $value)
+                    <option value="{{ $key }}" @if (isset($visit->risk_behavior) && $key == $visit->risk_behavior) selected="selected" @endif>
+                        {{ $value }}
+                    </option>
+                    @endforeach
+                </select>
+                {!! $errors->first('risk_behavior', '<p class="help-block">:message</div>') !!}
+            </div>
+            <div class="col-6 form-group {{ $errors->has('sti_hostory') ? 'has-error' : '' }}">
+                <label for="sti_hostory" class="control-label">{{ 'ประวัติโรค STI(โรค,ระยะเวลา)' }}</label>
+                <input class="form-control" name="sti_hostory" type="text" id="sti_hostory" value="{{ isset($visit->sti_hostory) ? $visit->sti_hostory : '' }}">
+                {!! $errors->first('sti_hostory', '<p class="help-block">:message</div>') !!}
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-10  form-group {{ $errors->has('contraceptive_method') ? 'has-error' : '' }}">
+                <label for="contraceptive_method" class="control-label">{{ 'วิธีการคุมกำเนิด' }}</label>
+                <input class="form-control" name="contraceptive_method" type="text" id="contraceptive_method" value="{{ isset($visit->contraceptive_method) ? $visit->contraceptive_method : '' }}">
+                {!! $errors->first('contraceptive_method', '<p class="help-block">:message</div>') !!}
+            </div>
+            @if($visit->patient()->sex == 2)
+            <div class="col-2 form-group {{ $errors->has('LMP') ? 'has-error' : '' }}">
+                <label for="LMP" class="date control-label">{{ 'Lmp' }}</label>
+                <input class="form-control date" name="LMP" type="text" id="LMP" value="{{ isset($visit->LMP) ? $visit->LMP : '' }}">
+                {!! $errors->first('LMP', '<p class="help-block">:message</div>') !!}
+            </div>
+            @endif
+
+        </div>
+    </div>
+</div>
+<br>
+
+
+<div class="d-grid">
+    <a class="btn btn-light" data-bs-toggle="collapse" href="#visitSymptom" role="button" aria-expanded="false" aria-controls="collapseExample">
+        ประวัติการเจ็บป่วยปัจจุบัน**
+    </a>
+</div>
+<div class="collapse pb-2 " id="visitSymptom">
+    <div class="card card-body">
+        <div class="form-group {{ $errors->has('symptom') ? 'has-error' : '' }}">
+            <label for="symptom" class="control-label">{{ 'อาการเจ็บป่วยครั้งปัจจุบัน' }}</label>
+            <textarea class="form-control" rows="5" name="symptom" type="textarea" id="symptom">{{ isset($visit->symptom) ? $visit->symptom : '' }}</textarea>
+            {!! $errors->first('symptom', '<p class="help-block">:message</div>') !!}
+        </div>
+    </div>
+</div>
+<br>
+
+@if(isset($visit) )
+<div class="d-grid">
+    <a class="btn btn-light" data-bs-toggle="collapse" href="#visitContact" role="button" aria-expanded="false" aria-controls="collapseExample">
+    คู่นอน คู่สัมผัส (contact)
+    </a>
+</div>
+<div class="collapse pb-2 " id="visitContact">
+    <div class="card card-body">
+        @include ('visit.contact', ['visit' => $visit])
+    </div>
+</div>
+<br>
+@endif
+
+
+@if(isset($visit) )
+<div class="d-grid">
+    <a class="btn btn-light" data-bs-toggle="collapse" href="#visitLab" role="button" aria-expanded="false" aria-controls="collapseExample">
+    การตรวจร่างกาย
+    </a>
+</div>
+<div class="collapse pb-2 " id="visitLab">
+    <div class="card card-body">
+        @include ('visit.lab', ['visit' => $visit])
+    </div>
+</div>
+<br>
+@endif
+
+
+
+@if(isset($visit) )
+<div class="d-grid">
+    <a class="btn btn-light" data-bs-toggle="collapse" href="#visitLab" role="button" aria-expanded="false" aria-controls="collapseExample">
+        Lab
+    </a>
+</div>
+<div class="collapse pb-2 " id="visitLab">
+    <div class="card card-body">
+        @include ('visit.lab', ['visit' => $visit])
+    </div>
+</div>
+<br>
+@endif
+
+
+<div class="d-grid">
+    <a class="btn btn-light" data-bs-toggle="collapse" href="#visitDiagnosis" role="button" aria-expanded="false" aria-controls="collapseExample">
+        วินิจฉัย**
+    </a>
+</div>
+<div class="collapse  pb-2" id="visitDiagnosis">
+    <div class="card card-body">
+        <div class="form-group {{ $errors->has('diagnosis') ? 'has-error' : '' }}">
+            <label for="diagnosis" class="control-label">{{ 'การวินิจฉัย' }}</label>
+            <textarea class="form-control" rows="5" name="diagnosis" type="textarea" id="diagnosis">{{ isset($visit->diagnosis) ? $visit->diagnosis : '' }}</textarea>
+            {!! $errors->first('diagnosis', '<p class="help-block">:message</div>') !!}
+        </div>
+        <div class="row">
+            <div class="col-4 form-group {{ $errors->has('term_syphilis') ? 'has-error' : '' }}">
+                <label for="term_syphilis" class="control-label">{{ 'ซิฟิริสระยะ' }}</label>
+                {{-- <input class="form-control" name="term_syphilis" type="number" id="term_syphilis"
+            value="{{ isset($visit->term_syphilis) ? $visit->term_syphilis : '' }}"> --}}
+                <select class="form-control" name="term_syphilis" id="term_syphilis">
+                    @foreach (App\Models\Visit::$termSyphilisOption as $key => $value)
+                    <option value="{{ $key }}" @if (isset($visit->term_syphilis) && $key == $visit->term_syphilis) selected="selected" @endif>
+                        {{ $value }}
+                    </option>
+                    @endforeach
+                </select>
+                {!! $errors->first('term_syphilis', '<p class="help-block">:message</div>') !!}
+            </div>
+            <div class="col-4  form-group {{ $errors->has('disease_state') ? 'has-error' : '' }}">
+                <label for="disease_state" class="control-label">{{ 'สถานะของโรค' }}</label>
+                {{-- <input class="form-control" name="disease_state" type="number" id="disease_state"
+            value="{{ isset($visit->disease_state) ? $visit->disease_state : '' }}"> --}}
+                <select class="form-control" name="disease_state" id="disease_state">
+                    @foreach (App\Models\Visit::$diseaseStateOption as $key => $value)
+                    <option value="{{ $key }}" @if (isset($visit->disease_state) && $key == $visit->disease_state) selected="selected" @endif>
+                        {{ $value }}
+                    </option>
+                    @endforeach
+                </select>
+                {!! $errors->first('disease_state', '<p class="help-block">:message</div>') !!}
+            </div>
+            <div class="col-4 form-group {{ $errors->has('disease_state_other') ? 'has-error' : '' }}">
+                <label for="disease_state_other" class="control-label">{{ 'สถานะของโรค อื่น ๆ' }}</label>
+                <input class="form-control" name="disease_state_other" type="text" id="disease_state_other" value="{{ isset($visit->disease_state_other) ? $visit->disease_state_other : '' }}">
+                {!! $errors->first('disease_state_other', '<p class="help-block">:message</div>') !!}
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+
+
+<div class="d-grid">
+    <a class="btn btn-light" data-bs-toggle="collapse" href="#visitTreatment" role="button" aria-expanded="false" aria-controls="collapseExample">
+    การรักษา + ให้คำแนะนำ
+    </a>
+</div>
+<div class="collapse pb-2 " id="visitTreatment">
+    <div class="card card-body">
+        <div class="form-group {{ $errors->has('treatment') ? 'has-error' : '' }}">
+            <label for="treatment" class="control-label">{{ 'การรักษา' }}</label>
+            <textarea class="form-control" rows="5" name="treatment" type="textarea" id="treatment">{{ isset($visit->treatment) ? $visit->treatment : '' }}</textarea>
+            {!! $errors->first('treatment', '<p class="help-block">:message</div>') !!}
+        </div>
+    </div>
+</div>
+<br>
+
+<div class="d-grid">
+    <a class="btn btn-light" data-bs-toggle="collapse" href="#visitOther" role="button" aria-expanded="false" aria-controls="collapseExample">
+    วันนัด
+    </a>
+</div>
+<div class="collapse pb-2 " id="visitOther">
+    <div class="card card-body">
+        <div class="form-group {{ $errors->has('consultation') ? 'has-error' : '' }}">
+            <label for="consultation" class="control-label">{{ 'การให้สุขศึกษา/การปรึกษาเรื่อง Safe sex, Condom, ความรู้เรื่องโรค ยาและผลข้างเคียง' }}</label>
+            {{-- <input class="form-control" name="consultation" type="number" id="consultation"
+        value="{{ isset($visit->consultation) ? $visit->consultation : '' }}"> --}}
+            <select class="form-control" name="consultation" id="consultation">
+                @foreach (App\Models\Visit::$consultationOption as $key => $value)
+                <option value="{{ $key }}" @if (isset($visit->consultation) && $key == $visit->consultation) selected="selected" @endif>
+                    {{ $value }}
+                </option>
+                @endforeach
+            </select>
+            {!! $errors->first('consultation', '<p class="help-block">:message</div>') !!}
+        </div>
+        <div class="row">
+            <div class="col-4 form-group {{ $errors->has('hiv_sti_test') ? 'has-error' : '' }}">
+                <label for="hiv_sti_test" class="control-label">{{ 'การให้คำปรึกษาเพื่อตรวจหาเชื่้อ HIV/Syphili' }}</label>
+                {{-- <input class="form-control" name="hiv_sti_test" type="number" id="hiv_sti_test"
+            value="{{ isset($visit->hiv_sti_test) ? $visit->hiv_sti_test : '' }}"> --}}
+
+                <select class="form-control" name="hiv_sti_test" id="hiv_sti_test">
+                    @foreach (App\Models\Visit::$hivStiTestResuleOption as $key => $value)
+                    <option value="{{ $key }}" @if (isset($visit->hiv_sti_test) && $key == $visit->hiv_sti_test) selected="selected" @endif>
+                        {{ $value }}
+                    </option>
+                    @endforeach
+                </select>
+                {!! $errors->first('hiv_sti_test', '<p class="help-block">:message</div>') !!}
+            </div>
+            <div class="col-4 form-group {{ $errors->has('hiv_sti_test_date') ? 'has-error' : '' }}">
+                <label for="hiv_sti_test_date" class="control-label">{{ 'Hiv Sti Test Date' }}</label>
+                <input class="form-control date" name="hiv_sti_test_date" type="text" id="hiv_sti_test_date" value="{{ isset($visit->hiv_sti_test_date) ? $visit->hiv_sti_test_date : '' }}">
+                {!! $errors->first('hiv_sti_test_date', '<p class="help-block">:message</div>') !!}
+            </div>
+            <div class="col-4 form-group {{ $errors->has('hiv_sti_test_resule') ? 'has-error' : '' }}">
+                <label for="hiv_sti_test_resule" class="control-label">{{ 'Hiv Sti Test Resule' }}</label>
+                <input class="form-control" name="hiv_sti_test_resule" type="text" id="hiv_sti_test_resule" value="{{ isset($visit->hiv_sti_test_resule) ? $visit->hiv_sti_test_resule : '' }}">
+                {!! $errors->first('hiv_sti_test_resule', '<p class="help-block">:message</div>') !!}
+            </div>
+        </div>
+
+
+
+
+        <div class="row">
+            <div class="col-6 form-group {{ $errors->has('touch_tracing') ? 'has-error' : '' }}">
+                <label for="touch_tracing" class="control-label">{{ 'การติดตามคู่สัมผัส' }}</label>
+                {{-- <input class="form-control" name="touch_tracing" type="number" id="touch_tracing"
+            value="{{ isset($visit->touch_tracing) ? $visit->touch_tracing : '' }}"> --}}
+
+                <select class="form-control" name="touch_tracing" id="touch_tracing">
+                    @foreach (App\Models\Visit::$touchTracingOption as $key => $value)
+                    <option value="{{ $key }}" @if (isset($visit->touch_tracing) && $key == $visit->touch_tracing) selected="selected" @endif>
+                        {{ $value }}
+                    </option>
+                    @endforeach
+                </select>
+                {!! $errors->first('touch_tracing', '<p class="help-block">:message</div>') !!}
+            </div>
+            <div class="col-6 form-group {{ $errors->has('touch_tracing_fail') ? 'has-error' : '' }}">
+                <label for="touch_tracing_fail" class="control-label">{{ 'ไม่สามารถติดตามได้จำนวน (คน) ' }}</label>
+                <input class="form-control" name="touch_tracing_fail" type="number" id="touch_tracing_fail" value="{{ isset($visit->touch_tracing_fail) ? $visit->touch_tracing_fail : '' }}">
+                {!! $errors->first('touch_tracing_fail', '<p class="help-block">:message</div>') !!}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-4 form-group {{ $errors->has('provide_condom_site') ? 'has-error' : '' }}">
+                <label for="provide_condom_site" class="control-label">{{ 'แจกถุงยางอนามัย ขนาด' }}</label>
+                <input class="form-control" name="provide_condom_site" type="text" id="provide_condom_site" value="{{ isset($visit->provide_condom_site) ? $visit->provide_condom_site : '' }}">
+                {!! $errors->first('provide_condom_site', '<p class="help-block">:message</div>') !!}
+            </div>
+            <div class="col-4 form-group {{ $errors->has('provide_condom_quantity') ? 'has-error' : '' }}">
+                <label for="provide_condom_quantity" class="control-label">{{ 'แจกถุงยางอนามัย จำนวน (ชิ้น)' }}</label>
+                <input class="form-control" name="provide_condom_quantity" type="number" id="provide_condom_quantity" value="{{ isset($visit->provide_condom_quantity) ? $visit->provide_condom_quantity : '' }}">
+                {!! $errors->first('provide_condom_quantity', '<p class="help-block">:message</div>') !!}
+            </div>
+            <div class="col-4 form-group {{ $errors->has('provide_lubricant_quantity') ? 'has-error' : '' }}">
+                <label for="provide_lubricant_quantity" class="control-label">{{ 'แจกสารหล่อลื่น จำนวน (ชิ้น)' }}</label>
+                <input class="form-control" name="provide_lubricant_quantity" type="number" id="provide_lubricant_quantity" value="{{ isset($visit->provide_lubricant_quantity) ? $visit->provide_lubricant_quantity : '' }}">
+                {!! $errors->first('provide_lubricant_quantity', '<p class="help-block">:message</div>') !!}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-2 form-group {{ $errors->has('appointment') ? 'has-error' : '' }}">
+                <label for="appointment" class="control-label">{{ 'Appointment' }}</label>
+                <input class="form-control date" name="appointment" type="text" id="appointment" value="{{ isset($visit->appointment) ? $visit->appointment : '' }}">
+                {!! $errors->first('appointment', '<p class="help-block">:message</div>') !!}
+            </div>
+            <div class="col-10 form-group {{ $errors->has('appointment_reason') ? 'has-error' : '' }}">
+                <label for="appointment_reason" class="control-label">{{ 'Appointment Reason' }}</label>
+                <input class="form-control " name="appointment_reason" type="text" id="appointment_reason" value="{{ isset($visit->appointment_reason) ? $visit->appointment_reason : '' }}">
+                {!! $errors->first('appointment_reason', '<p class="help-block">:message</div>') !!}
+            </div>
+        </div>
+
+    </div>
+</div>
+<br>
+
+<div class="form-group">
+    <input class="btn btn-primary" type="submit" value="{{ $formMode === 'edit' ? 'Update' : 'Create' }}">
+</div>
+
+<script src="/js/bootstrap-datepicker.js"></script>
+<script src="/js/bootstrap-datepicker-thai.js"></script>
+<script src="/js/bootstrap-datepicker.th.js"></script>
+
+<script type="text/javascript">
+    $(function() {
+
+        $('.date').datepicker({
+            language: 'th-th',
+        });
+    });
+</script>

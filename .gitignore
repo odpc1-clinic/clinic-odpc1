@@ -1,0 +1,40 @@
+/node_modules
+/public/hot
+/public/storage
+/storage/*.key
+/vendor
+.env
+.env.backup
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+
+# เลิกใช้แล้ว (ยืนยันกับผู้ใช้ 2569-08-11) — มี DB password ฝังตรงโค้ด + .env จริงอยู่ข้างใน
+# ไม่ลบไฟล์ออกจากเครื่อง แค่กันไม่ให้เข้า git
+/public/HyggeQue
+/public/sideserver
+
+# ข้อมูลคนไข้จริง/ไฟล์ debug อันตราย — ห้ามเข้า git แม้ private repo ก็ตาม (ผู้ใช้ยืนยันลบออกจากเว็บแล้ว 2569-08-11)
+/temp.php
+/public/test report/
+
+# ระบบเรียกคิว (public/queue) — มี MySQL root password ฝังตรงโค้ดหลายจุด (db_connect.php, queue_management.php)
+# ห้ามเข้า git เด็ดขาด (2569-08-11) · ตัวที่ใช้งานจริงคือ Laragon copy แยกต่างหาก ไม่ใช่ตัวนี้
+# public/vendor และ public/queue/vendor คือ composer vendor ของระบบนี้ ไม่ต้อง commit เหมือนกัน
+/public/queue/config/db_connect.php
+/public/queue/vendor
+/public/queue_management.php
+/public/vendor
+# สำเนาโปรแกรมคิวจาก Laragon ที่วางไว้ที่ htdocs/queue (2569-10-20) — มีรหัสผ่าน MySQL ในโค้ด ห้ามเข้า git
+/queue/
+
+# ไฟล์ config ที่ php artisan config:cache สร้าง — มีค่า .env ทุกตัวรวมถึง DB_PASSWORD ฝังอยู่ตรงๆ
+# ห้ามเข้า git เด็ดขาด (มาตรฐานของ Laravel เอง, ของเดิมในโปรเจกต์นี้ไม่ได้กันไว้)
+/bootstrap/cache/*.php
+
+# สำเนาฐานข้อมูล/ไฟล์บีบอัด ห้ามเข้า repo (มีข้อมูลคนไข้ได้) — 2569-11-02
+/database/*.sql
+/database/*.sql.gz
+*.rar

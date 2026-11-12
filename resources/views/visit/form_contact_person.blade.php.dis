@@ -1,0 +1,135 @@
+<div class="row">
+    <div class="form-group col-2 {{ $errors->has('date') ? 'has-error' : '' }}">
+        <label for="date" class="control-label">{{ 'Date' }}</label>
+        <input class="form-control date" name="date" type="text" id="date"
+            value="{{ isset($contactperson->date) ? $contactperson->date : '' }}" autocomplete="off">
+        {!! $errors->first('date', '<p class="help-block">:message</p>') !!}
+    </div>
+    <div class="form-group col-4 {{ $errors->has('name') ? 'has-error' : '' }}">
+        <label for="name" class="control-label">{{ 'Name' }}</label>
+        <input class="form-control" name="name" type="text" id="name"
+            value="{{ isset($contactperson->name) ? $contactperson->name : '' }}">
+        {!! $errors->first('name', '<p class="help-block">:message</p>') !!}
+    </div>
+    <div class="form-group col-4 {{ $errors->has('surname') ? 'has-error' : '' }}">
+        <label for="surname" class="control-label">{{ 'Surname' }}</label>
+        <input class="form-control" name="surname" type="text" id="surname"
+            value="{{ isset($contactperson->surname) ? $contactperson->surname : '' }}">
+        {!! $errors->first('surname', '<p class="help-block">:message</p>') !!}
+    </div>
+    <div class="form-group col-2 {{ $errors->has('sex') ? 'has-error' : '' }}">
+        <label for="sex" class="control-label">{{ 'Sex' }}</label>
+        {{-- <input class="form-control" name="sex" type="number" id="sex"
+            value="{{ isset($contactperson->sex) ? $contactperson->sex : '' }}"> --}}
+            <select class="form-control" name="sex" id="sex">
+                @foreach (App\Models\Patient::$sexOption as $key => $value)
+                    <option value="{{ $key }}" @if (isset($contactperson->prefix) && $key == $contactperson->sex) selected="selected" @endif>
+                        {{ $value }}</option>
+                @endforeach
+            </select>
+        {!! $errors->first('sex', '<p class="help-block">:message</p>') !!}
+    </div>
+</div>
+
+<hr>
+<div class="row ">
+    <h4>ประเภท</h4>
+ 
+
+        <div class="form-check col-2 {{ $errors->has('sex_worker_ty') ? 'has-error' : '' }}"  style="margin-left:10px">
+            <input class="form-check-input" name="sex_worker_ty" type="checkbox" id="sex_worker_ty"
+                value="1">
+            <label for="sex_worker_ty" class="form-check-label">{{ 'ผู้ให้บริการ' }}</label>
+            {!! $errors->first('sex_worker_ty', '<p class="help-block">:message</p>') !!}
+        </div>
+        <div class="form-check col-2 {{ $errors->has('husband_wife_ty') ? 'has-error' : '' }}">
+            <label for="husband_wife_ty" class="form-check-label">{{ 'สามี/ภรรยา' }}</label>
+            <input class="form-check-input" name="husband_wife_ty" type="checkbox" id="husband_wife_ty"
+                value="1">
+            {!! $errors->first('husband_wife_ty', '<p class="help-block">:message</p>') !!}
+        </div>
+        <div class="form-check col-2 {{ $errors->has('regular_partner_ty') ? 'has-error' : '' }}">
+            <label for="regular_partner_ty" class="form-check-label">{{ 'คู่นอนประจำ' }}</label>
+            <input class="form-check-input" name="regular_partner_ty" type="checkbox" id="regular_partner_ty"
+            value="1">
+            {!! $errors->first('regular_partner_ty', '<p class="help-block">:message</p>') !!}
+        </div>
+        <div class="form-check col-2 {{ $errors->has('temporary_partner_ty') ? 'has-error' : '' }}">
+            <label for="temporary_partner_ty" class="form-check-label">{{ 'คู่นอนชั่วคราว' }}</label>
+            <input class="form-check-input" name="temporary_partner_ty" type="checkbox" id="temporary_partner_ty"
+            value="1">
+            {!! $errors->first('temporary_partner_ty', '<p class="help-block">:message</p>') !!}
+        </div>
+        <div class="form-check col-2 {{ $errors->has('customer_ty') ? 'has-error' : '' }}">
+            <label for="customer_ty" class="form-check-label">{{ 'ลูกค้า' }}</label>
+            <input class="form-check-input" name="customer_ty" type="checkbox" id="customer_ty"
+            value="1">
+            {!! $errors->first('customer_ty', '<p class="help-block">:message</p>') !!}
+        </div>
+</div>
+
+<hr>
+<div class="row ">
+    <h4>ช่องทางการมีเภทสัมพันธ์</h4>
+
+    <div class="form-check  col-2  {{ $errors->has('vagina_mt') ? 'has-error' : '' }}" style="margin-left:10px">
+        <label for="vagina_mt" class="form-check-label">{{ 'Vagina' }}</label>
+        <input class="form-check-input" name="vagina_mt" type="checkbox" id="vagina_mt"
+        value="1">
+        {!! $errors->first('vagina_mt', '<p class="help-block">:message</p>') !!}
+    </div>
+    <div class="form-check  col-2 {{ $errors->has('mouth_mt') ? 'has-error' : '' }}">
+        <label for="mouth_mt" class="form-check-label">{{ 'Mouth' }}</label>
+        <input class="form-check-input" name="mouth_mt" type="checkbox" id="mouth_mt"
+        value="1">
+        {!! $errors->first('mouth_mt', '<p class="help-block">:message</p>') !!}
+    </div>
+    <div class="form-check  col-2 {{ $errors->has('penis_mt') ? 'has-error' : '' }}">
+        <label for="penis_mt" class="form-check-label">{{ 'Penis' }}</label>
+        <input class="form-check-input" name="penis_mt" type="checkbox" id="penis_mt"
+        value="1">
+        {!! $errors->first('penis_mt', '<p class="help-block">:message</p>') !!}
+    </div>
+    <div class="form-check col-2  {{ $errors->has('anus_mt') ? 'has-error' : '' }}">
+        <label for="anus_mt" class="form-check-label">{{ 'Anus' }}</label>
+        <input class="form-check-input" name="anus_mt" type="checkbox" id="anus_mt"
+        value="1">
+        {!! $errors->first('anus_mt', '<p class="help-block">:message</p>') !!}
+    </div>
+</div>
+
+<hr>
+<div class="row ">
+    <h4>การใช้ถุงยาง</h4>
+    <div class="form-check  col-2 {{ $errors->has('use_cd') ? 'has-error' : '' }} " style="margin-left:10px">
+        <label for="use_cd" class="control-label">{{ 'ใช้' }}</label>
+        <input class="form-check-input" name="use_cd" type="checkbox" id="use_cd"
+        value="1">
+        {!! $errors->first('use_cd', '<p class="help-block">:message</p>') !!}
+    </div>
+    <div class="form-check  col-2 {{ $errors->has('unuse_cd') ? 'has-error' : '' }}">
+        <label for="unuse_cd" class="control-label">{{ 'ไม่ใช้' }}</label>
+        <input class="form-check-input" name="unuse_cd" type="checkbox" id="unuse_cd"
+        value="1">
+        {!! $errors->first('unuse_cd', '<p class="help-block">:message</p>') !!}
+    </div>
+    <div class="form-check  col-2 {{ $errors->has('brea_slip_cd') ? 'has-error' : '' }}">
+        <label for="brea_slip_cd" class="control-label">{{ 'แตก/หลุด' }}</label>
+        <input class="form-check-input" name="brea_slip_cd" type="checkbox" id="brea_slip_cd"
+        value="1">
+        {!! $errors->first('brea_slip_cd', '<p class="help-block">:message</p>') !!}
+    </div>
+    <div class="form-check  col-2 {{ $errors->has('unbrea_slip_cd') ? 'has-error' : '' }}">
+        <label for="unbrea_slip_cd" class="control-label">{{ 'ไม่แตก/หลุด' }}</label>
+        <input class="form-check-input" name="unbrea_slip_cd" type="checkbox" id="unbrea_slip_cd"
+        value="1">
+        {!! $errors->first('unbrea_slip_cd', '<p class="help-block">:message</p>') !!}
+    </div>
+
+</div>
+
+<br>
+
+<div class="form-group">
+    <input class="btn btn-primary" type="submit" value="{{ $formMode === 'edit' ? 'Update' : 'Create' }}">
+</div>
